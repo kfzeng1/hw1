@@ -1,26 +1,55 @@
 # 机器学习与深度学习作业
 
-本仓库整理了本次课程的 4 个作业，代码和结果文件已经分目录放好：
+这个仓库按 4 个作业重新整理，代码、结果和说明分开放。根目录只保留总说明，具体内容在 `assignments/` 和 `docs/`。
 
-1. `hw_poly_sin/`：使用线性回归和多项式特征逼近 `sin(x)`，次数为 3、4、5。
-2. `hw_newton_min/`：使用牛顿法求解 `f(x, y) = x^2 + y^2` 的最小值，并绘制迭代轨迹。
-3. `cifar10_project/`：CIFAR-10 图像分类项目，包含数据下载、数据处理、模型训练、测试、预测和网页演示。
-4. `api/`：调用豆包 API 生成 3D 模型和视频，并用脚本渲染旋转展示视频。
+## 目录结构
 
-## 四个作业结果位置
+```text
+.
+├── assignments/
+│   ├── 01_poly_sin/             多项式逼近 sin(x)
+│   ├── 02_newton_min/           牛顿法最小化 x^2 + y^2
+│   ├── 03_cifar10_classifier/   CIFAR-10 图像分类
+│   └── 04_doubao_3d_video/      豆包 API 生成 3D 视频
+├── docs/
+│   ├── project_structure.md     仓库结构说明
+│   └── result_locations.md      四个作业结果位置
+└── README.md
+```
+
+## 四个作业
 
 | 作业 | 代码位置 | 结果位置 |
 | --- | --- | --- |
-| 多项式逼近 `sin(x)` | `hw_poly_sin/poly_sin_regression.py` | `hw_poly_sin/poly_sin_regression.png` |
-| 牛顿法最小化 `x^2 + y^2` | `hw_newton_min/newton_square_xy.py` | `hw_newton_min/newton_square_xy.png` |
-| CIFAR-10 图像分类 | `cifar10_project/` | `cifar10_project/results/cifar10_100_epochs/` |
-| 豆包 API 生成 3D 视频 | `api/3d.py`、`api/vedio.py`、`api/render_turntable.py` | `api/turntable.mp4` |
+| 多项式逼近 `sin(x)` | `assignments/01_poly_sin/poly_sin_regression.py` | `assignments/01_poly_sin/poly_sin_regression.png` |
+| 牛顿法最小化 `x^2 + y^2` | `assignments/02_newton_min/newton_square_xy.py` | `assignments/02_newton_min/newton_square_xy.png` |
+| CIFAR-10 图像分类 | `assignments/03_cifar10_classifier/` | `assignments/03_cifar10_classifier/results/cifar10_100_epochs/` |
+| 豆包 API 生成 3D 视频 | `assignments/04_doubao_3d_video/` | `assignments/04_doubao_3d_video/results/turntable.mp4` |
 
-CIFAR-10 的 100 轮结果中，`history.csv` 是训练日志，`training_curves.png` 是训练曲线，`cifar10_samples.png` 是样本图。最佳测试准确率为 96.96%。更详细的位置说明见 `RESULTS.md`。
+CIFAR-10 已训练到 100 轮。第 100 轮测试准确率为 `96.87%`，最佳测试准确率为 `96.96%`，最佳轮次是第 89 轮。
 
-## 注意
+## 快速查看结果
 
-- `api/.env` 不上传，需要根据 `api/.env.example` 自行配置。
-- CIFAR-10 原始数据、训练 checkpoint 和大模型生成的 `.glb` 文件体积较大，已通过 `.gitignore` 排除。
-- CIFAR-10 数据可通过项目内脚本重新下载。
-- `docx/` 不上传到 GitHub，本地报告文件保留在本机目录中。
+详细结果位置见：
+
+```text
+docs/result_locations.md
+```
+
+仓库结构说明见：
+
+```text
+docs/project_structure.md
+```
+
+## 不上传的内容
+
+以下文件保留在本机，但不放进 GitHub：
+
+- `docx/`：实习报告 Word/PDF 文件
+- `assignments/03_cifar10_classifier/data/`：CIFAR-10 原始数据
+- `assignments/03_cifar10_classifier/checkpoints_*/`：训练权重
+- `assignments/04_doubao_3d_video/.env`：API key
+- `assignments/04_doubao_3d_video/output_model/`：生成的 `.glb` 模型文件
+
+如果要复现训练或重新生成视频，按各作业目录里的 `README.md` 操作。

@@ -10,7 +10,7 @@ import requests
 from volcenginesdkarkruntime import Ark
 
 
-IMAGE_PATH = Path("./met_bulul_DP320246.jpg")
+IMAGE_PATH = Path("inputs/met_bulul_DP320246.jpg")
 OUTPUT_ZIP = Path("output_model.zip")
 OUTPUT_DIR = Path("output_model")
 DEFAULT_MODEL_ID = "doubao-seed3d-2-0-260328"

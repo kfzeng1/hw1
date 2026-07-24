@@ -6,18 +6,18 @@ __pycache__/
 # Local environments and secrets
 .env
 *.env
-api/.env
+assignments/04_doubao_3d_video/.env
 
 # CIFAR-10 data and trained weights
-cifar10_project/data/
-cifar10_project/checkpoints/
-cifar10_project/checkpoints_*/
-cifar10_project/checkpoints_smoke/
+assignments/03_cifar10_classifier/data/
+assignments/03_cifar10_classifier/checkpoints/
+assignments/03_cifar10_classifier/checkpoints_*/
+assignments/03_cifar10_classifier/checkpoints_smoke/
 *.pt
 *.pth
 
 # Generated heavy model assets
-api/output_model/
+assignments/04_doubao_3d_video/output_model/
 *.zip
 
 # Office temporary files

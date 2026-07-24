@@ -16,4 +16,4 @@
 - `training_curves.png`：训练过程曲线图。
 - `cifar10_samples.png`：CIFAR-10 原始样本可视化。
 
-模型权重文件 `.pt` 体积较大，未上传到 GitHub。如需复现结果，可以根据项目根目录 `README.md` 中的命令重新下载数据并训练。
+模型权重文件 `.pt` 体积较大，未上传到 GitHub。如需复现结果，可以回到 `assignments/03_cifar10_classifier/`，按该目录 `README.md` 中的命令重新下载数据并训练。

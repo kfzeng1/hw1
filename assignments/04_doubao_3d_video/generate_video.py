@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from volcenginesdkarkruntime import Ark
 
 
-IMAGE_PATH = Path("./met_bulul_DP320246.jpg")
+IMAGE_PATH = Path("inputs/met_bulul_DP320246.jpg")
 DEFAULT_MODEL_ID = "doubao-seedance-1-0-pro-250528"
 PROMPT = (
     "Use the reference image as the exact subject. Create a clean museum-style turntable video "
