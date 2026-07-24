@@ -21,6 +21,7 @@ api/output_model/
 *.zip
 
 # Office temporary files
+docx/
 ~$*
 .~*
 
