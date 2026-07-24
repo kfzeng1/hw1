@@ -1,0 +1,9 @@
+data/
+checkpoints/
+checkpoints_*/
+checkpoints_smoke/
+outputs/
+__pycache__/
+*.pyc
+*.pt
+*.pth

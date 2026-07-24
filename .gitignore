@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local environments and secrets
+.env
+*.env
+api/.env
+
+# CIFAR-10 data and trained weights
+cifar10_project/data/
+cifar10_project/checkpoints/
+cifar10_project/checkpoints_*/
+cifar10_project/checkpoints_smoke/
+*.pt
+*.pth
+
+# Generated heavy model assets
+api/output_model/
+*.zip
+
+# Office temporary files
+~$*
+.~*
+
+# System files
+.DS_Store
+Thumbs.db
