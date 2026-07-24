@@ -8,6 +8,13 @@
 
 另外，`api/` 中保留了调用豆包 API 生成 3D 模型和视频的相关代码；`docx/` 中保留最终实习报告。
 
+## 结果文件
+
+- `hw_poly_sin/poly_sin_regression.png`：多项式逼近 `sin(x)` 结果图。
+- `hw_newton_min/newton_square_xy.png`：牛顿法最小化 `x^2 + y^2` 的迭代轨迹图。
+- `cifar10_project/results/cifar10_100_epochs/`：CIFAR-10 训练到 100 轮后的日志、训练曲线和样本图，最佳测试准确率为 96.96%。
+- `api/turntable.mp4`：调用 API 和渲染脚本生成的 3D 展示视频结果。
+
 ## 注意
 
 - `api/.env` 不上传，需要根据 `api/.env.example` 自行配置。
