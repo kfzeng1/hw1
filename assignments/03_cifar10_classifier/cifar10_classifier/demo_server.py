@@ -275,7 +275,11 @@ def make_handler(state):
 def parse_args():
     parser = argparse.ArgumentParser(description="Run CIFAR-10 browser demo.")
     parser.add_argument("--data-dir", default="./data", type=str)
-    parser.add_argument("--checkpoint", default="./checkpoints_50/cifar10_wrn_best.pt", type=str)
+    parser.add_argument(
+        "--checkpoint",
+        default="./checkpoints_100_finetune/cifar10_wrn_best.pt",
+        type=str,
+    )
     parser.add_argument("--host", default="127.0.0.1", type=str)
     parser.add_argument("--port", default=8008, type=int)
     return parser.parse_args()

@@ -7,9 +7,9 @@ class TrainConfig:
     data_dir: str = "./data"
     mirror: str = "official"
     download_url: str = ""
-    output_dir: str = "./checkpoints_50"
+    output_dir: str = "./checkpoints_100_finetune"
     history_file: str = "history.csv"
-    epochs: int = 50
+    epochs: int = 100
     batch_size: int = 128
     test_batch_size: int = 512
     workers: int = 4

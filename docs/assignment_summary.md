@@ -37,7 +37,6 @@ assignments/04_doubao_3d_video/作业4_豆包3D视频.docx
 ```text
 assignments/01_poly_sin/results/
 assignments/02_newton_min/results/
-assignments/03_cifar10_classifier/results/cifar10_50_epochs/
 assignments/03_cifar10_classifier/results/cifar10_100_finetune/
 assignments/04_doubao_3d_video/results/
 ```

@@ -48,7 +48,7 @@ results/         已生成的小体积结果文件
 作业*.docx       本地 Word 报告，不上传 GitHub
 ```
 
-作业 3 是完整项目，代码在 `cifar10_classifier/` 包内，文档在 `docs/`。50 轮结果在 `results/cifar10_50_epochs/`，继续训练到 100 轮后的最新结果在 `results/cifar10_100_finetune/`。
+作业 3 是完整项目，代码在 `cifar10_classifier/` 包内，文档在 `docs/`，正式结果在 `results/cifar10_100_finetune/`。
 
 ## 不提交的内容
 

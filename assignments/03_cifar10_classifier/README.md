@@ -22,31 +22,13 @@ cifar10_classifier/
 
 ## 训练结果
 
-50 轮训练结果保存在：
-
-```text
-results/cifar10_50_epochs/
-```
-
-50 轮结果摘要：
-
-```text
-第 50 轮测试准确率：96.04%
-最佳测试准确率：96.04%
-最佳轮次：第 50 轮
-macro F1：96.03%
-weighted F1：96.03%
-```
-
-checkpoint 权重保存在 `checkpoints_50/`，体积较大，不上传到 GitHub。
-
-从 50 轮 checkpoint 继续训练到 100 轮后的最新结果保存在：
+最终正式结果保存在：
 
 ```text
 results/cifar10_100_finetune/
 ```
 
-100 轮结果摘要：
+结果摘要：
 
 ```text
 第 100 轮测试准确率：97.25%
@@ -57,7 +39,7 @@ weighted F1：97.30%
 测试集正确数：9730 / 10000
 ```
 
-续训 checkpoint 权重保存在 `checkpoints_100_finetune/`，体积较大，不上传到 GitHub。
+checkpoint 权重保存在 `checkpoints_100_finetune/`，体积较大，不上传到 GitHub。
 
 ## 下载数据
 
@@ -68,16 +50,16 @@ cd assignments/03_cifar10_classifier
   --mirror sjtu
 ```
 
-## 重新训练 50 轮
+## 重新训练 100 轮
 
 ```bash
 cd assignments/03_cifar10_classifier
 /home/zkf/pytorch-env/bin/python -B -m cifar10_classifier.main \
-  --epochs 50 \
+  --epochs 100 \
   --batch-size 128 \
   --test-batch-size 512 \
   --workers 4 \
-  --output-dir ./checkpoints_50 \
+  --output-dir ./checkpoints_100_finetune \
   --tta \
   --target-acc 90.0
 ```
@@ -85,22 +67,22 @@ cd assignments/03_cifar10_classifier
 训练输出：
 
 ```text
-checkpoints_50/cifar10_wrn_best.pt
-checkpoints_50/cifar10_wrn_last.pt
-checkpoints_50/history.csv
-checkpoints_50/training_curves.png
+checkpoints_100_finetune/cifar10_wrn_best.pt
+checkpoints_100_finetune/cifar10_wrn_last.pt
+checkpoints_100_finetune/history.csv
+checkpoints_100_finetune/training_curves.png
 ```
 
-## 从 50 轮继续训练到 100 轮
+## 断点继续训练
 
-这里没有把学习率重新拉回 `0.1`。续训时模型已经达到 `96%` 左右，过大的学习率容易破坏已有权重；过小的学习率又很难继续提升。因此续训使用 `--lr 0.012 --warmup-epochs 0`，接入 100 轮 cosine 衰减后，第 51 轮实际学习率约为 `0.006`，随后逐步降到 `1e-5`。
+已有较高准确率模型时，不建议把学习率重新拉回初始的 `0.1`。继续微调可以使用较小的 `--lr`，并把 `--epochs` 设置成新的总轮数。
 
 ```bash
 cd assignments/03_cifar10_classifier
 /home/zkf/pytorch-env/bin/python -B -m cifar10_classifier.main \
-  --resume ./checkpoints_50/cifar10_wrn_last.pt \
-  --epochs 100 \
-  --lr 0.012 \
+  --resume ./checkpoints_100_finetune/cifar10_wrn_last.pt \
+  --epochs 150 \
+  --lr 0.006 \
   --min-lr 1e-5 \
   --warmup-epochs 0 \
   --batch-size 128 \

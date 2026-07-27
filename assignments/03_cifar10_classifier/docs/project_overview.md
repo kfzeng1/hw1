@@ -1,6 +1,6 @@
 # CIFAR-10 项目说明
 
-本项目用于完成课程小作业中的 CIFAR-10 图像分类任务。代码按训练、评估、预测、可视化和网页演示拆分。50 轮结果保存在 `results/cifar10_50_epochs/`，继续训练到 100 轮后的最新结果保存在 `results/cifar10_100_finetune/`。
+本项目用于完成课程小作业中的 CIFAR-10 图像分类任务。代码按训练、评估、预测、可视化和网页演示拆分。正式结果保存在 `results/cifar10_100_finetune/`。
 
 ## 数据集
 
@@ -42,31 +42,13 @@ cifar10_classifier/demo_server.py     浏览器演示
 
 ## 正式结果
 
-50 轮训练结果保存在：
-
-```text
-results/cifar10_50_epochs/
-```
-
-50 轮结果摘要：
-
-```text
-最佳测试准确率：96.04%
-最佳轮次：第 50 轮
-macro F1：96.03%
-weighted F1：96.03%
-测试集正确数：9604 / 10000
-```
-
-权重文件保存在本地 `checkpoints_50/`，体积较大，不上传到 GitHub。
-
-继续训练到 100 轮后的最新结果保存在：
+本次最终结果保存在：
 
 ```text
 results/cifar10_100_finetune/
 ```
 
-100 轮结果摘要：
+结果摘要：
 
 ```text
 最佳测试准确率：97.30%
@@ -77,7 +59,7 @@ weighted F1：97.30%
 测试集正确数：9730 / 10000
 ```
 
-续训权重文件保存在本地 `checkpoints_100_finetune/`，体积较大，不上传到 GitHub。
+权重文件保存在本地 `checkpoints_100_finetune/`，体积较大，不上传到 GitHub。
 
 ## 常用命令
 
@@ -87,26 +69,26 @@ weighted F1：97.30%
 /home/zkf/pytorch-env/bin/python -m cifar10_classifier.download --mirror sjtu
 ```
 
-训练 50 轮：
+训练 100 轮：
 
 ```bash
 /home/zkf/pytorch-env/bin/python -B -m cifar10_classifier.main \
-  --epochs 50 \
+  --epochs 100 \
   --batch-size 128 \
   --test-batch-size 512 \
   --workers 4 \
-  --output-dir ./checkpoints_50 \
+  --output-dir ./checkpoints_100_finetune \
   --tta \
   --target-acc 90.0
 ```
 
-从 50 轮继续训练到 100 轮：
+断点继续训练：
 
 ```bash
 /home/zkf/pytorch-env/bin/python -B -m cifar10_classifier.main \
-  --resume ./checkpoints_50/cifar10_wrn_last.pt \
-  --epochs 100 \
-  --lr 0.012 \
+  --resume ./checkpoints_100_finetune/cifar10_wrn_last.pt \
+  --epochs 150 \
+  --lr 0.006 \
   --min-lr 1e-5 \
   --warmup-epochs 0 \
   --batch-size 128 \

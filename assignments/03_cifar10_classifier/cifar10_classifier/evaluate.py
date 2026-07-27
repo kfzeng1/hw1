@@ -13,12 +13,16 @@ from .visualize import save_confusion_matrix
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Evaluate a CIFAR-10 checkpoint.")
-    parser.add_argument("--checkpoint", default="./checkpoints_50/cifar10_wrn_best.pt", type=str)
+    parser.add_argument(
+        "--checkpoint",
+        default="./checkpoints_100_finetune/cifar10_wrn_best.pt",
+        type=str,
+    )
     parser.add_argument("--data-dir", default="./data", type=str)
     parser.add_argument("--batch-size", default=256, type=int)
     parser.add_argument("--workers", default=4, type=int)
     parser.add_argument("--tta", action="store_true")
-    parser.add_argument("--output-dir", default="./checkpoints_50", type=str)
+    parser.add_argument("--output-dir", default="./results/cifar10_100_finetune", type=str)
     return parser.parse_args()
 
 

@@ -53,10 +53,10 @@ Label smoothing = 0.1
 
 训练日志中的 `train_acc` 是在增强后的 batch 上按原始 hard label 粗略统计的。由于训练阶段启用了 MixUp、CutMix 和 RandomErasing，这个数值主要用于观察训练是否在推进，不适合和测试准确率直接比较。
 
-## 50 轮训练参数
+## 默认训练参数
 
 ```text
-epochs = 50
+epochs = 100
 batch_size = 128
 test_batch_size = 512
 optimizer = SGD
@@ -82,11 +82,11 @@ seed = 42
 
 ```bash
 /home/zkf/pytorch-env/bin/python -B -m cifar10_classifier.main \
-  --epochs 50 \
+  --epochs 100 \
   --batch-size 128 \
   --test-batch-size 512 \
   --workers 4 \
-  --output-dir ./checkpoints_50 \
+  --output-dir ./checkpoints_100_finetune \
   --tta \
   --target-acc 90.0
 ```
@@ -94,23 +94,23 @@ seed = 42
 训练输出：
 
 ```text
-checkpoints_50/cifar10_wrn_best.pt
-checkpoints_50/cifar10_wrn_last.pt
-checkpoints_50/history.csv
-checkpoints_50/training_curves.png
+checkpoints_100_finetune/cifar10_wrn_best.pt
+checkpoints_100_finetune/cifar10_wrn_last.pt
+checkpoints_100_finetune/history.csv
+checkpoints_100_finetune/training_curves.png
 ```
 
-## 继续训练到 100 轮
+## 断点继续训练
 
-50 轮模型已经达到 `96.04%` 测试准确率，继续训练时不适合把学习率直接恢复到初始的 `0.1`。本次续训使用 `base lr=0.012`、`warmup_epochs=0`，并把总轮数设为 100。由于学习率仍按 100 轮 cosine schedule 计算，第 51 轮实际学习率约为 `0.006`，后续逐步衰减到 `1e-5`。
+模型已经达到较高准确率后，继续训练时不适合把学习率直接恢复到初始的 `0.1`。继续微调可以使用较小学习率，例如 `0.006`，并把 `--epochs` 设置成新的总轮数。
 
 续训命令：
 
 ```bash
 /home/zkf/pytorch-env/bin/python -B -m cifar10_classifier.main \
-  --resume ./checkpoints_50/cifar10_wrn_last.pt \
-  --epochs 100 \
-  --lr 0.012 \
+  --resume ./checkpoints_100_finetune/cifar10_wrn_last.pt \
+  --epochs 150 \
+  --lr 0.006 \
   --min-lr 1e-5 \
   --warmup-epochs 0 \
   --batch-size 128 \
@@ -163,26 +163,7 @@ results/cifar10_100_finetune/classification_report.csv
 
 ## 本次结果
 
-50 轮训练结果保存在：
-
-```text
-results/cifar10_50_epochs/history.csv
-results/cifar10_50_epochs/training_curves.png
-results/cifar10_50_epochs/confusion_matrix.png
-results/cifar10_50_epochs/metrics.json
-results/cifar10_50_epochs/classification_report.csv
-```
-
-结果：
-
-```text
-第 50 轮测试准确率：96.04%
-最佳测试准确率：96.04%
-macro F1：96.03%
-weighted F1：96.03%
-```
-
-继续训练到 100 轮后的最新结果保存在：
+最终正式结果保存在：
 
 ```text
 results/cifar10_100_finetune/history.csv
@@ -193,7 +174,7 @@ results/cifar10_100_finetune/classification_report.csv
 results/cifar10_100_finetune/cifar10_samples.png
 ```
 
-100 轮结果：
+结果：
 
 ```text
 第 100 轮测试准确率：97.25%

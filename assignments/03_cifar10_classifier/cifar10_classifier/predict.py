@@ -10,7 +10,11 @@ from .inference import load_model_from_checkpoint
 def parse_args():
     parser = argparse.ArgumentParser(description="Predict one CIFAR-10 image.")
     parser.add_argument("image", type=str)
-    parser.add_argument("--checkpoint", default="./checkpoints_50/cifar10_wrn_best.pt", type=str)
+    parser.add_argument(
+        "--checkpoint",
+        default="./checkpoints_100_finetune/cifar10_wrn_best.pt",
+        type=str,
+    )
     return parser.parse_args()
 
 

@@ -52,4 +52,4 @@ assignments/04_doubao_3d_video/.env
 assignments/04_doubao_3d_video/output_model/
 ```
 
-CIFAR-10 checkpoint 保存在本地 `assignments/03_cifar10_classifier/checkpoints_50/` 和 `assignments/03_cifar10_classifier/checkpoints_100_finetune/`，体积较大，不上传；可用代码重新训练生成。
+CIFAR-10 checkpoint 保存在本地 `assignments/03_cifar10_classifier/checkpoints_100_finetune/`，体积较大，不上传；可用代码重新训练生成。
