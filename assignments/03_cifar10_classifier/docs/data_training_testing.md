@@ -51,6 +51,8 @@ Label smoothing = 0.1
 
 因此训练 loss 使用 soft-target cross entropy。
 
+训练日志中的 `train_acc` 是在增强后的 batch 上按原始 hard label 粗略统计的。由于训练阶段启用了 MixUp、CutMix 和 RandomErasing，这个数值主要用于观察训练是否在推进，不适合和测试准确率直接比较。
+
 ## 50 轮训练参数
 
 ```text
@@ -120,6 +122,13 @@ results/cifar10_50_epochs/classification_report.csv
 ```
 
 `metrics.json` 保存整体 accuracy、macro precision、macro recall、macro F1、weighted F1。`classification_report.csv` 保存 10 个类别各自的 precision、recall、F1 和 support。
+
+查看摘要：
+
+```bash
+/home/zkf/pytorch-env/bin/python -m cifar10_classifier.result_summary \
+  --result-dir ./results/cifar10_50_epochs
+```
 
 ## 本次 50 轮结果
 

@@ -15,6 +15,7 @@ cifar10_classifier/
   model.py          WideResNet-28-10
   main.py           训练入口
   predict.py        单张图片预测
+  result_summary.py 结果摘要打印
   scheduler.py      warmup + cosine 学习率
   visualize.py      样本图、训练曲线、混淆矩阵
 ```
@@ -89,6 +90,34 @@ results/cifar10_50_epochs/classification_report.csv
 ```
 
 `metrics.json` 包含 accuracy、macro precision、macro recall、macro F1、weighted F1 等指标。
+
+## 查看结果摘要
+
+```bash
+/home/zkf/pytorch-env/bin/python -m cifar10_classifier.result_summary \
+  --result-dir ./results/cifar10_50_epochs
+```
+
+## 单张图片预测
+
+```bash
+/home/zkf/pytorch-env/bin/python -m cifar10_classifier.predict \
+  path/to/image.png \
+  --checkpoint ./checkpoints_50/cifar10_wrn_best.pt
+```
+
+## 网页演示
+
+左侧随机刷新 CIFAR-10 测试集原图，右侧点击预测：
+
+```bash
+/home/zkf/pytorch-env/bin/python -m cifar10_classifier.demo_server \
+  --checkpoint ./checkpoints_50/cifar10_wrn_best.pt \
+  --data-dir ./data \
+  --port 8008
+```
+
+浏览器打开 `http://127.0.0.1:8008`。
 
 ## 快速自测
 

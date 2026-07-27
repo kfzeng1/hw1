@@ -23,6 +23,7 @@ CIFAR10_MIRRORS = {
     "baidu": "https://dataset.bj.bcebos.com/cifar/cifar-10-python.tar.gz",
     "brainchip": "https://data.brainchip.com/dataset-mirror/cifar10/cifar-10-python.tar.gz",
 }
+DEFAULT_CIFAR10_URL = datasets.CIFAR10.url
 
 
 def resolve_download_url(mirror="", download_url=""):
@@ -54,26 +55,37 @@ def build_transforms():
     return train_transform, test_transform
 
 
-def build_loaders(args):
+def configure_download_source(args):
     download_url = resolve_download_url(
         getattr(args, "mirror", "official"), getattr(args, "download_url", "")
     )
-    if download_url:
-        datasets.CIFAR10.url = download_url
+    datasets.CIFAR10.url = download_url or DEFAULT_CIFAR10_URL
 
-    train_transform, test_transform = build_transforms()
+
+def build_train_dataset(args):
+    configure_download_source(args)
+    train_transform, _ = build_transforms()
     train_set = datasets.CIFAR10(
         root=args.data_dir, train=True, transform=train_transform, download=True
     )
+    if args.limit_train_samples > 0:
+        train_set = Subset(train_set, range(args.limit_train_samples))
+    return train_set
+
+
+def build_test_dataset(args):
+    configure_download_source(args)
+    _, test_transform = build_transforms()
     test_set = datasets.CIFAR10(
         root=args.data_dir, train=False, transform=test_transform, download=True
     )
-
-    if args.limit_train_samples > 0:
-        train_set = Subset(train_set, range(args.limit_train_samples))
     if args.limit_test_samples > 0:
         test_set = Subset(test_set, range(args.limit_test_samples))
+    return test_set
 
+
+def build_train_loader(args):
+    train_set = build_train_dataset(args)
     train_loader = DataLoader(
         train_set,
         batch_size=args.batch_size,
@@ -83,6 +95,11 @@ def build_loaders(args):
         drop_last=True,
         persistent_workers=args.workers > 0,
     )
+    return train_loader
+
+
+def build_test_loader(args):
+    test_set = build_test_dataset(args)
     test_loader = DataLoader(
         test_set,
         batch_size=args.test_batch_size,
@@ -91,6 +108,12 @@ def build_loaders(args):
         pin_memory=True,
         persistent_workers=args.workers > 0,
     )
+    return test_loader
+
+
+def build_loaders(args):
+    train_loader = build_train_loader(args)
+    test_loader = build_test_loader(args)
     return train_loader, test_loader
 
 

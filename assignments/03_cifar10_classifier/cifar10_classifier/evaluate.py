@@ -4,7 +4,7 @@ import os
 import torch
 
 from .config import parse_args as parse_train_args
-from .data import build_loaders
+from .data import build_test_loader
 from .engine import evaluate
 from .inference import get_device, load_model_from_checkpoint
 from .metrics import classification_metrics, save_metrics
@@ -60,7 +60,7 @@ def main():
     model, checkpoint, device = load_model_from_checkpoint(args.checkpoint, device)
     eval_args = build_eval_args(args, checkpoint, device)
 
-    _, test_loader = build_loaders(eval_args)
+    test_loader = build_test_loader(eval_args)
     test_loss, test_acc = evaluate(model, test_loader, device, eval_args)
     print(f"test_loss={test_loss:.4f} test_acc={test_acc:.2f}%")
 
