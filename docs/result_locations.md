@@ -2,6 +2,17 @@
 
 这份文件只说明结果在哪里看。数据集、模型权重、API key 和实习报告不上传。
 
+## 本地 Word 文档
+
+```text
+assignments/01_poly_sin/作业1_多项式逼近sinx.docx
+assignments/02_newton_min/作业2_牛顿法最小化.docx
+assignments/03_cifar10_classifier/作业3_CIFAR10图像分类.docx
+assignments/04_doubao_3d_video/作业4_豆包3D视频.docx
+```
+
+这些 Word 文件和代码在同一目录，符合课程要求；GitHub 不上传 Word。
+
 ## 作业 1：多项式逼近 sin(x)
 
 代码：

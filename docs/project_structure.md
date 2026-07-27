@@ -34,13 +34,26 @@ assignments/
     results/
 
 docs/
+  assignment_summary.md
   project_structure.md
   result_locations.md
 ```
 
+## 每个作业目录内的内容
+
+```text
+README.md        该作业说明和运行命令
+*.py             代码入口或功能模块
+results/         已生成的小体积结果文件
+作业*.docx       本地 Word 报告，不上传 GitHub
+```
+
+作业 3 是完整项目，代码在 `cifar10_classifier/` 包内，文档在 `docs/`，正式结果在 `results/cifar10_50_epochs/`。
+
 ## 不提交的内容
 
 ```text
+*.docx
 docx/
 专业实习课程考核要求*.pdf
 assignments/03_cifar10_classifier/data/
