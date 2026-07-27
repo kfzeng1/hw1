@@ -10,7 +10,7 @@
 official, sjtu, oneflow, baidu, brainchip
 ```
 
-推荐 SJTU 镜像：
+推荐命令：
 
 ```bash
 /home/zkf/pytorch-env/bin/python -m cifar10_classifier.download --mirror sjtu
@@ -23,7 +23,7 @@ data/cifar-10-python.tar.gz
 data/cifar-10-batches-py/
 ```
 
-数据集不上传到 GitHub。
+数据集不上传。
 
 ## 数据增强
 
@@ -39,9 +39,9 @@ Normalize(mean=(0.4914, 0.4822, 0.4465),
 RandomErasing(p=0.25, scale=(0.02, 0.15), ratio=(0.3, 3.3))
 ```
 
-测试集只做 `ToTensor()` 和 `Normalize()`，不使用随机增强。
+测试集只做 `ToTensor()` 和 `Normalize()`。
 
-训练循环中还会使用：
+训练循环中还使用：
 
 ```text
 MixUp alpha = 0.2
@@ -49,14 +49,12 @@ CutMix alpha = 1.0
 Label smoothing = 0.1
 ```
 
-所以训练 loss 使用 soft-target cross entropy。
+因此训练 loss 使用 soft-target cross entropy。
 
-## 训练参数
-
-本次结果对应的主要参数：
+## 50 轮训练参数
 
 ```text
-epochs = 100
+epochs = 50
 batch_size = 128
 test_batch_size = 512
 optimizer = SGD
@@ -82,7 +80,7 @@ seed = 42
 
 ```bash
 /home/zkf/pytorch-env/bin/python -B -m cifar10_classifier.main \
-  --epochs 100 \
+  --epochs 50 \
   --batch-size 128 \
   --test-batch-size 512 \
   --workers 4 \
@@ -91,9 +89,7 @@ seed = 42
   --target-acc 90.0
 ```
 
-## 输出文件
-
-训练过程会保存到本地：
+训练输出：
 
 ```text
 checkpoints_50/cifar10_wrn_best.pt
@@ -102,24 +98,9 @@ checkpoints_50/history.csv
 checkpoints_50/training_curves.png
 ```
 
-其中 `.pt` 权重不上传。提交到 GitHub 的结果快照在：
+## 测试和评价指标
 
-```text
-results/cifar10_100_epochs/history.csv
-results/cifar10_100_epochs/training_curves.png
-results/cifar10_100_epochs/cifar10_samples.png
-```
-
-## 测试方式
-
-测试使用 CIFAR-10 官方测试集，共 10,000 张图片，不使用训练集。
-
-使用 `--tta` 时，测试会平均两次预测：
-
-```text
-原图预测
-水平翻转图预测
-```
+测试使用 CIFAR-10 官方测试集，共 10,000 张图片。
 
 测试命令：
 
@@ -130,7 +111,27 @@ results/cifar10_100_epochs/cifar10_samples.png
   --output-dir ./checkpoints_50
 ```
 
-本次训练结果：
+测试输出：
+
+```text
+checkpoints_50/confusion_matrix.png
+checkpoints_50/metrics.json
+checkpoints_50/classification_report.csv
+```
+
+`metrics.json` 保存整体 accuracy、macro precision、macro recall、macro F1、weighted F1。`classification_report.csv` 保存 10 个类别各自的 precision、recall、F1 和 support。
+
+## 已保留的 100 轮结果
+
+旧的 100 轮结果作为结果快照保留：
+
+```text
+results/cifar10_100_epochs/history.csv
+results/cifar10_100_epochs/training_curves.png
+results/cifar10_100_epochs/cifar10_samples.png
+```
+
+结果：
 
 ```text
 第 100 轮测试准确率：96.87%

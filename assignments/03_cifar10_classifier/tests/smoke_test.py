@@ -5,6 +5,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 
 from cifar10_classifier.engine import evaluate, train_one_epoch
+from cifar10_classifier.metrics import classification_metrics
 from cifar10_classifier.model import WideResNet
 
 
@@ -33,9 +34,11 @@ def main():
 
     train_loss, train_acc = train_one_epoch(model, loader, optimizer, scaler, device, args)
     test_loss, test_acc = evaluate(model, loader, device, args)
+    metrics = classification_metrics(targets, targets)
 
     print(f"train_loss={train_loss:.4f} train_acc={train_acc:.2f}%")
     print(f"test_loss={test_loss:.4f} test_acc={test_acc:.2f}%")
+    print(f"metrics_accuracy={metrics['accuracy'] * 100:.2f}%")
     print("smoke test passed")
 
 

@@ -1,10 +1,27 @@
 # 作业 3：CIFAR-10 图像分类
 
-本作业训练 CIFAR-10 图像分类模型。项目包含数据下载、数据处理、模型定义、训练、测试、单张图片预测、网页演示和结果保存。
+要求：使用 PyTorch 自主设计并搭建 CNN 模型，完成 CIFAR-10 分类训练，测试集准确率达到 90% 以上，并输出多种分类评价指标。
 
-## 当前结果
+## 代码结构
 
-100 轮训练结果已整理到：
+```text
+cifar10_classifier/
+  augment.py        MixUp、CutMix、label smoothing
+  config.py         命令行参数
+  data.py           数据下载、增强和 DataLoader
+  engine.py         训练、测试、checkpoint
+  evaluate.py       测试入口，保存混淆矩阵和分类指标
+  metrics.py        accuracy、precision、recall、F1
+  model.py          WideResNet-28-10
+  main.py           训练入口
+  predict.py        单张图片预测
+  scheduler.py      warmup + cosine 学习率
+  visualize.py      样本图、训练曲线、混淆矩阵
+```
+
+## 已有结果
+
+100 轮结果保存在：
 
 ```text
 results/cifar10_100_epochs/
@@ -18,94 +35,23 @@ results/cifar10_100_epochs/
 最佳轮次：第 89 轮
 ```
 
-结果目录中的文件：
-
-```text
-history.csv           每轮训练日志
-training_curves.png  训练曲线
-cifar10_samples.png  CIFAR-10 原始样本图
-README.md            结果说明
-```
-
-模型权重 `.pt` 没有上传到 GitHub，保留在本地 `checkpoints_50/` 中。
-
-## 模型和训练策略
-
-模型使用 `WideResNet-28-10`。训练中使用：
-
-```text
-RandAugment
-RandomErasing
-MixUp
-CutMix
-label smoothing
-SGD Nesterov
-warmup + cosine 学习率
-CUDA AMP
-```
-
-详细说明：
-
-```text
-docs/model_and_parameters.md
-docs/data_training_testing.md
-docs/project_overview.md
-```
-
-## 目录结构
-
-```text
-03_cifar10_classifier/
-  cifar10_classifier/
-    augment.py
-    config.py
-    data.py
-    demo_server.py
-    download.py
-    engine.py
-    evaluate.py
-    inference.py
-    main.py
-    model.py
-    predict.py
-    scheduler.py
-    utils.py
-    visualize.py
-  docs/
-  results/cifar10_100_epochs/
-  tests/
-  requirements.txt
-```
-
-## 运行环境
-
-```bash
-cd assignments/03_cifar10_classifier
-```
-
-安装依赖：
-
-```bash
-/home/zkf/pytorch-env/bin/python -m pip install -r requirements.txt
-```
+旧 checkpoint 权重已经删除，没有上传到 GitHub。
 
 ## 下载数据
 
-推荐使用 SJTU 镜像：
-
 ```bash
+cd assignments/03_cifar10_classifier
 /home/zkf/pytorch-env/bin/python -m cifar10_classifier.download \
   --data-dir ./data \
   --mirror sjtu
 ```
 
-## 训练
-
-重新训练 100 轮：
+## 重新训练 50 轮
 
 ```bash
+cd assignments/03_cifar10_classifier
 /home/zkf/pytorch-env/bin/python -B -m cifar10_classifier.main \
-  --epochs 100 \
+  --epochs 50 \
   --batch-size 128 \
   --test-batch-size 512 \
   --workers 4 \
@@ -114,18 +60,16 @@ cd assignments/03_cifar10_classifier
   --target-acc 90.0
 ```
 
-断点继续训练：
+训练输出：
 
-```bash
-/home/zkf/pytorch-env/bin/python -B -m cifar10_classifier.main \
-  --resume ./checkpoints_50/cifar10_wrn_last.pt \
-  --epochs 100 \
-  --output-dir ./checkpoints_50 \
-  --tta \
-  --target-acc 90.0
+```text
+checkpoints_50/cifar10_wrn_best.pt
+checkpoints_50/cifar10_wrn_last.pt
+checkpoints_50/history.csv
+checkpoints_50/training_curves.png
 ```
 
-## 测试
+## 测试并输出指标
 
 ```bash
 /home/zkf/pytorch-env/bin/python -m cifar10_classifier.evaluate \
@@ -134,31 +78,17 @@ cd assignments/03_cifar10_classifier
   --output-dir ./checkpoints_50
 ```
 
-## 单张图片预测
-
-```bash
-/home/zkf/pytorch-env/bin/python -m cifar10_classifier.predict path/to/image.png \
-  --checkpoint ./checkpoints_50/cifar10_wrn_best.pt
-```
-
-## 浏览器演示
-
-```bash
-/home/zkf/pytorch-env/bin/python -m cifar10_classifier.demo_server \
-  --checkpoint ./checkpoints_50/cifar10_wrn_best.pt \
-  --data-dir ./data \
-  --port 8008
-```
-
-浏览器打开：
+测试输出：
 
 ```text
-http://127.0.0.1:8008
+checkpoints_50/confusion_matrix.png
+checkpoints_50/metrics.json
+checkpoints_50/classification_report.csv
 ```
 
-## 快速自测
+`metrics.json` 包含 accuracy、macro precision、macro recall、macro F1、weighted F1 等指标。
 
-这个测试不需要下载 CIFAR-10，只检查模型前向、loss、反向传播、优化器和测试流程。
+## 快速自测
 
 ```bash
 /home/zkf/pytorch-env/bin/python -B -m tests.smoke_test

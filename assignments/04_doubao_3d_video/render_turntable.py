@@ -178,7 +178,7 @@ def encode_video(frame_dir, output_path, fps):
 def main():
     parser = argparse.ArgumentParser(description="把 .glb 3D 模型渲染成自动旋转 mp4。")
     parser.add_argument("--model", default=DEFAULT_MODEL, help="输入 .glb 文件路径；不传则自动查找。")
-    parser.add_argument("--out", default="turntable.mp4", help="输出 mp4 文件路径。")
+    parser.add_argument("--out", default="results/turntable.mp4", help="输出 mp4 文件路径。")
     parser.add_argument("--frames", type=int, default=180, help="总帧数。")
     parser.add_argument("--fps", type=int, default=30, help="视频帧率。")
     parser.add_argument("--width", type=int, default=1080, help="视频宽度。")

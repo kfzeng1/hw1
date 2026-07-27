@@ -1,60 +1,64 @@
 # 作业 4：豆包 API 生成 3D 视频
 
-本作业根据一张参考图片调用豆包相关 API，生成 3D 模型或视频，并用本地脚本渲染旋转展示视频。
+要求：对接豆包应用程序开发接口，完成商品或物品的三维展示交互效果。这里使用一张木雕文物图片作为输入，生成 3D 模型或视频，并保存旋转展示结果。
 
 ## 文件
 
 ```text
-generate_3d_model.py       根据参考图生成 3D 模型
-generate_video.py          根据参考图调用图生视频接口
-render_turntable.py        将 .glb 模型渲染成旋转 mp4
-view_model.html            在浏览器中查看 .glb 模型
-.env.example               API key 配置示例
-inputs/met_bulul_DP320246.jpg
-results/turntable.mp4
+generate_3d_model.py              调用接口生成 3D 模型
+generate_video.py                 调用图生视频接口
+render_turntable.py               将 .glb 模型渲染成旋转 mp4
+view_model.html                   浏览器查看 .glb 模型
+.env.example                      API key 配置示例
+inputs/met_bulul_DP320246.jpg     输入图片
+results/turntable.mp4             结果视频
 ```
 
-## 结果
-
-视频结果在：
-
-```text
-results/turntable.mp4
-```
-
-参考图片在：
-
-```text
-inputs/met_bulul_DP320246.jpg
-```
-
-## 运行
-
-先配置 API key：
+## 运行前配置
 
 ```bash
 cd assignments/04_doubao_3d_video
 cp .env.example .env
 ```
 
-然后在 `.env` 中填入 `ARK_API_KEY`。
+然后在 `.env` 中填入：
 
-生成 3D 模型：
-
-```bash
-/home/zkf/pytorch-env/bin/python generate_3d_model.py
+```text
+ARK_API_KEY=你的 key
 ```
 
-调用图生视频：
+`.env` 不上传到 GitHub。
+
+## 生成 3D 模型
 
 ```bash
-/home/zkf/pytorch-env/bin/python generate_video.py
+/home/zkf/pytorch-env/bin/python generate_3d_model.py \
+  --image inputs/met_bulul_DP320246.jpg \
+  --output-dir output_model
 ```
 
-如果已经有 `.glb` 模型，可以渲染旋转视频：
+生成的 `.glb` 文件会保存在 `output_model/`。这个目录体积较大，不上传。
+
+## 生成视频
 
 ```bash
-/home/zkf/pytorch-env/bin/python render_turntable.py --out results/turntable.mp4
+/home/zkf/pytorch-env/bin/python generate_video.py \
+  --image inputs/met_bulul_DP320246.jpg
 ```
 
-`.env` 和 `output_model/` 不上传到 GitHub。
+接口返回的视频链接会打印在终端。
+
+## 渲染旋转展示视频
+
+如果本地已有 `.glb` 模型，可以生成旋转展示视频：
+
+```bash
+/home/zkf/pytorch-env/bin/python render_turntable.py \
+  --out results/turntable.mp4
+```
+
+提交到仓库中的结果视频：
+
+```text
+results/turntable.mp4
+```

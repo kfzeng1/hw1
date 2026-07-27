@@ -13,19 +13,14 @@ from .utils import CSVLogger, count_parameters, set_seed
 from .visualize import plot_history
 
 
-def main():
-    args = parse_args()
-    set_seed(args.seed)
-
+def get_device():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    args.amp = args.amp and device.type == "cuda"
     if device.type == "cuda":
         torch.set_float32_matmul_precision("high")
-    print(f"device: {device}")
-    if device.type == "cuda":
-        print(f"gpu: {torch.cuda.get_device_name(0)}")
+    return device
 
-    train_loader, test_loader = build_loaders(args)
+
+def build_model(args, device):
     model = WideResNet(
         depth=args.depth,
         widen_factor=args.widen_factor,
@@ -36,24 +31,59 @@ def main():
         model = model.to(memory_format=torch.channels_last)
     if args.compile_model:
         model = torch.compile(model)
-    print(f"model: WideResNet-{args.depth}-{args.widen_factor}")
-    print(f"trainable parameters: {count_parameters(model):,}")
+    return model
 
-    optimizer = optim.SGD(
+
+def build_optimizer(model, args):
+    return optim.SGD(
         model.parameters(),
         lr=args.lr,
         momentum=args.momentum,
         weight_decay=args.weight_decay,
         nesterov=True,
     )
-    scheduler = CosineWarmupLR(
+
+
+def build_scheduler(optimizer, args):
+    return CosineWarmupLR(
         optimizer,
         warmup_epochs=args.warmup_epochs,
         total_epochs=args.epochs,
         base_lr=args.lr,
         min_lr=args.min_lr,
     )
-    scaler = torch.amp.GradScaler("cuda", enabled=args.amp and device.type == "cuda")
+
+
+def checkpoint_paths(output_dir, history_file):
+    return {
+        "last": os.path.join(output_dir, "cifar10_wrn_last.pt"),
+        "best": os.path.join(output_dir, "cifar10_wrn_best.pt"),
+        "history": os.path.join(output_dir, history_file),
+        "curves": os.path.join(output_dir, "training_curves.png"),
+    }
+
+
+def print_run_header(args, device, model):
+    print(f"device: {device}")
+    if device.type == "cuda":
+        print(f"gpu: {torch.cuda.get_device_name(0)}")
+    print(f"model: WideResNet-{args.depth}-{args.widen_factor}")
+    print(f"trainable parameters: {count_parameters(model):,}")
+    print(f"epochs: {args.epochs}")
+    print(f"output_dir: {args.output_dir}")
+
+
+def train(args):
+    set_seed(args.seed)
+    device = get_device()
+    args.amp = args.amp and device.type == "cuda"
+
+    train_loader, test_loader = build_loaders(args)
+    model = build_model(args, device)
+    optimizer = build_optimizer(model, args)
+    scheduler = build_scheduler(optimizer, args)
+    scaler = torch.amp.GradScaler("cuda", enabled=args.amp)
+    paths = checkpoint_paths(args.output_dir, args.history_file)
 
     start_epoch = 0
     best_acc = 0.0
@@ -64,12 +94,9 @@ def main():
             f"best_acc={best_acc:.2f}"
         )
 
-    last_path = os.path.join(args.output_dir, "cifar10_wrn_last.pt")
-    best_path = os.path.join(args.output_dir, "cifar10_wrn_best.pt")
-    history_path = os.path.join(args.output_dir, args.history_file)
-    curve_path = os.path.join(args.output_dir, "training_curves.png")
+    print_run_header(args, device, model)
     logger = CSVLogger(
-        history_path,
+        paths["history"],
         [
             "epoch",
             "lr",
@@ -84,40 +111,19 @@ def main():
 
     try:
         for epoch in range(start_epoch, args.epochs):
-            epoch_start = time.time()
-            lr = scheduler.step(epoch)
-            train_loss, train_acc = train_one_epoch(
-                model, train_loader, optimizer, scaler, device, args
-            )
-            test_loss, test_acc = evaluate(model, test_loader, device, args)
-            elapsed = time.time() - epoch_start
-
-            if test_acc > best_acc:
-                best_acc = test_acc
-                save_checkpoint(best_path, model, optimizer, scaler, epoch, best_acc, args)
-            save_checkpoint(last_path, model, optimizer, scaler, epoch, best_acc, args)
-
-            logger.write(
-                {
-                    "epoch": epoch + 1,
-                    "lr": lr,
-                    "train_loss": train_loss,
-                    "train_acc": train_acc,
-                    "test_loss": test_loss,
-                    "test_acc": test_acc,
-                    "best_acc": best_acc,
-                    "seconds": elapsed,
-                }
-            )
-            plot_history(history_path, curve_path)
-
-            print(
-                f"epoch {epoch + 1:03d}/{args.epochs} "
-                f"lr={lr:.6f} "
-                f"train_loss={train_loss:.4f} train_acc={train_acc:.2f}% "
-                f"test_loss={test_loss:.4f} test_acc={test_acc:.2f}% "
-                f"best={best_acc:.2f}% "
-                f"time={elapsed:.1f}s"
+            best_acc = run_epoch(
+                epoch,
+                best_acc,
+                model,
+                train_loader,
+                test_loader,
+                optimizer,
+                scheduler,
+                scaler,
+                device,
+                args,
+                paths,
+                logger,
             )
             if args.stop_at_target and best_acc >= args.target_acc:
                 print(f"stopping because target accuracy {args.target_acc:.2f}% was reached")
@@ -125,14 +131,75 @@ def main():
     finally:
         logger.close()
 
+    print_summary(best_acc, args, paths)
+
+
+def run_epoch(
+    epoch,
+    best_acc,
+    model,
+    train_loader,
+    test_loader,
+    optimizer,
+    scheduler,
+    scaler,
+    device,
+    args,
+    paths,
+    logger,
+):
+    epoch_start = time.time()
+    lr = scheduler.step(epoch)
+    train_loss, train_acc = train_one_epoch(
+        model, train_loader, optimizer, scaler, device, args
+    )
+    test_loss, test_acc = evaluate(model, test_loader, device, args)
+    elapsed = time.time() - epoch_start
+
+    if test_acc > best_acc:
+        best_acc = test_acc
+        save_checkpoint(paths["best"], model, optimizer, scaler, epoch, best_acc, args)
+    save_checkpoint(paths["last"], model, optimizer, scaler, epoch, best_acc, args)
+
+    logger.write(
+        {
+            "epoch": epoch + 1,
+            "lr": lr,
+            "train_loss": train_loss,
+            "train_acc": train_acc,
+            "test_loss": test_loss,
+            "test_acc": test_acc,
+            "best_acc": best_acc,
+            "seconds": elapsed,
+        }
+    )
+    plot_history(paths["history"], paths["curves"])
+
+    print(
+        f"epoch {epoch + 1:03d}/{args.epochs} "
+        f"lr={lr:.6f} "
+        f"train_loss={train_loss:.4f} train_acc={train_acc:.2f}% "
+        f"test_loss={test_loss:.4f} test_acc={test_acc:.2f}% "
+        f"best={best_acc:.2f}% "
+        f"time={elapsed:.1f}s"
+    )
+    return best_acc
+
+
+def print_summary(best_acc, args, paths):
     print(f"best accuracy: {best_acc:.2f}%")
-    print(f"best checkpoint: {best_path}")
-    print(f"history: {history_path}")
-    print(f"training curves: {curve_path}")
+    print(f"best checkpoint: {paths['best']}")
+    print(f"last checkpoint: {paths['last']}")
+    print(f"history: {paths['history']}")
+    print(f"training curves: {paths['curves']}")
     if best_acc >= args.target_acc:
         print(f"target reached: {best_acc:.2f}% >= {args.target_acc:.2f}%")
     else:
         print(f"target not reached yet: {best_acc:.2f}% < {args.target_acc:.2f}%")
+
+
+def main():
+    train(parse_args())
 
 
 if __name__ == "__main__":
