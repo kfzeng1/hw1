@@ -108,33 +108,36 @@ checkpoints_50/training_curves.png
 /home/zkf/pytorch-env/bin/python -m cifar10_classifier.evaluate \
   --checkpoint ./checkpoints_50/cifar10_wrn_best.pt \
   --tta \
-  --output-dir ./checkpoints_50
+  --output-dir ./results/cifar10_50_epochs
 ```
 
 测试输出：
 
 ```text
-checkpoints_50/confusion_matrix.png
-checkpoints_50/metrics.json
-checkpoints_50/classification_report.csv
+results/cifar10_50_epochs/confusion_matrix.png
+results/cifar10_50_epochs/metrics.json
+results/cifar10_50_epochs/classification_report.csv
 ```
 
 `metrics.json` 保存整体 accuracy、macro precision、macro recall、macro F1、weighted F1。`classification_report.csv` 保存 10 个类别各自的 precision、recall、F1 和 support。
 
-## 已保留的 100 轮结果
+## 本次 50 轮结果
 
-旧的 100 轮结果作为结果快照保留：
+本次重新训练的正式结果保存在：
 
 ```text
-results/cifar10_100_epochs/history.csv
-results/cifar10_100_epochs/training_curves.png
-results/cifar10_100_epochs/cifar10_samples.png
+results/cifar10_50_epochs/history.csv
+results/cifar10_50_epochs/training_curves.png
+results/cifar10_50_epochs/confusion_matrix.png
+results/cifar10_50_epochs/metrics.json
+results/cifar10_50_epochs/classification_report.csv
 ```
 
 结果：
 
 ```text
-第 100 轮测试准确率：96.87%
-最佳测试准确率：96.96%
-最佳轮次：第 89 轮
+第 50 轮测试准确率：96.04%
+最佳测试准确率：96.04%
+macro F1：96.03%
+weighted F1：96.03%
 ```

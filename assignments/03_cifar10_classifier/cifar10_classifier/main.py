@@ -107,6 +107,7 @@ def train(args):
             "best_acc",
             "seconds",
         ],
+        append=bool(args.resume),
     )
 
     try:

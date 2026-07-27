@@ -7,7 +7,7 @@
 ```text
 assignments/
   01_poly_sin/             多项式逼近 sin(x)
-  02_newton_min/           牛顿法最小化 x^2 + y^2
+  02_newton_min/           牛顿法最小化 x1^2+2x2^2+x1x2
   03_cifar10_classifier/   CIFAR-10 图像分类
   04_doubao_3d_video/      豆包 API 生成 3D 视频
 docs/
@@ -20,8 +20,8 @@ docs/
 | 作业 | 主要代码 | 结果 |
 | --- | --- | --- |
 | 1. 多项式逼近 `sin(x)` | `assignments/01_poly_sin/poly_sin_regression.py` | `assignments/01_poly_sin/results/` |
-| 2. 牛顿法最小化 `x^2 + y^2` | `assignments/02_newton_min/newton_square_xy.py` | `assignments/02_newton_min/results/` |
-| 3. CIFAR-10 图像分类 | `assignments/03_cifar10_classifier/` | `assignments/03_cifar10_classifier/results/cifar10_100_epochs/` |
+| 2. 牛顿法最小化 `x1^2+2x2^2+x1x2` | `assignments/02_newton_min/newton_quadratic_min.py` | `assignments/02_newton_min/results/` |
+| 3. CIFAR-10 图像分类 | `assignments/03_cifar10_classifier/` | `assignments/03_cifar10_classifier/results/cifar10_50_epochs/` |
 | 4. 豆包 API 生成 3D 视频 | `assignments/04_doubao_3d_video/` | `assignments/04_doubao_3d_video/results/turntable.mp4` |
 
 更详细的结果说明在：
@@ -42,4 +42,4 @@ assignments/04_doubao_3d_video/.env
 assignments/04_doubao_3d_video/output_model/
 ```
 
-CIFAR-10 旧模型权重已经删除。后续重新训练 50 轮时，会重新生成新的 checkpoint。
+CIFAR-10 checkpoint 保存在本地 `checkpoints_50/`，体积较大，不上传；可用代码重新训练生成。

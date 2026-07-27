@@ -37,11 +37,12 @@ def count_parameters(model):
 
 
 class CSVLogger:
-    def __init__(self, path, fieldnames):
+    def __init__(self, path, fieldnames, append=False):
         self.path = path
         self.fieldnames = fieldnames
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        self.file = open(path, "a", newline="", encoding="utf-8")
+        mode = "a" if append else "w"
+        self.file = open(path, mode, newline="", encoding="utf-8")
         self.writer = csv.DictWriter(self.file, fieldnames=fieldnames)
         if self.file.tell() == 0:
             self.writer.writeheader()

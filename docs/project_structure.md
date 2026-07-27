@@ -11,7 +11,7 @@ assignments/
 
   02_newton_min/
     README.md
-    newton_square_xy.py
+    newton_quadratic_min.py
     results/
 
   03_cifar10_classifier/
@@ -25,6 +25,7 @@ assignments/
   04_doubao_3d_video/
     README.md
     .env.example
+    doubao_utils.py
     generate_3d_model.py
     generate_video.py
     render_turntable.py

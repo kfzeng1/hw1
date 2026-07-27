@@ -19,23 +19,25 @@ cifar10_classifier/
   visualize.py      样本图、训练曲线、混淆矩阵
 ```
 
-## 已有结果
+## 本次 50 轮训练结果
 
-100 轮结果保存在：
+正式结果保存在：
 
 ```text
-results/cifar10_100_epochs/
+results/cifar10_50_epochs/
 ```
 
 结果摘要：
 
 ```text
-第 100 轮测试准确率：96.87%
-最佳测试准确率：96.96%
-最佳轮次：第 89 轮
+第 50 轮测试准确率：96.04%
+最佳测试准确率：96.04%
+最佳轮次：第 50 轮
+macro F1：96.03%
+weighted F1：96.03%
 ```
 
-旧 checkpoint 权重已经删除，没有上传到 GitHub。
+checkpoint 权重保存在 `checkpoints_50/`，体积较大，不上传到 GitHub。
 
 ## 下载数据
 
@@ -75,15 +77,15 @@ checkpoints_50/training_curves.png
 /home/zkf/pytorch-env/bin/python -m cifar10_classifier.evaluate \
   --checkpoint ./checkpoints_50/cifar10_wrn_best.pt \
   --tta \
-  --output-dir ./checkpoints_50
+  --output-dir ./results/cifar10_50_epochs
 ```
 
 测试输出：
 
 ```text
-checkpoints_50/confusion_matrix.png
-checkpoints_50/metrics.json
-checkpoints_50/classification_report.csv
+results/cifar10_50_epochs/confusion_matrix.png
+results/cifar10_50_epochs/metrics.json
+results/cifar10_50_epochs/classification_report.csv
 ```
 
 `metrics.json` 包含 accuracy、macro precision、macro recall、macro F1、weighted F1 等指标。
