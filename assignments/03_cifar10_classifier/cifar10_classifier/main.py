@@ -1,3 +1,4 @@
+import csv
 import os
 import time
 
@@ -63,6 +64,30 @@ def checkpoint_paths(output_dir, history_file):
     }
 
 
+def prepare_history_file(paths, args, start_epoch, fieldnames):
+    if not args.resume or start_epoch <= 0:
+        return
+
+    history_path = paths["history"]
+    resume_history = os.path.join(os.path.dirname(args.resume), args.history_file)
+    source_path = history_path if os.path.exists(history_path) else resume_history
+
+    if not os.path.exists(source_path):
+        return
+
+    rows = []
+    with open(source_path, newline="", encoding="utf-8") as file:
+        for row in csv.DictReader(file):
+            if int(row["epoch"]) <= start_epoch:
+                rows.append(row)
+
+    os.makedirs(os.path.dirname(history_path), exist_ok=True)
+    with open(history_path, "w", newline="", encoding="utf-8") as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 def print_run_header(args, device, model):
     print(f"device: {device}")
     if device.type == "cuda":
@@ -95,18 +120,20 @@ def train(args):
         )
 
     print_run_header(args, device, model)
+    history_fields = [
+        "epoch",
+        "lr",
+        "train_loss",
+        "train_acc",
+        "test_loss",
+        "test_acc",
+        "best_acc",
+        "seconds",
+    ]
+    prepare_history_file(paths, args, start_epoch, history_fields)
     logger = CSVLogger(
         paths["history"],
-        [
-            "epoch",
-            "lr",
-            "train_loss",
-            "train_acc",
-            "test_loss",
-            "test_acc",
-            "best_acc",
-            "seconds",
-        ],
+        history_fields,
         append=bool(args.resume),
     )
 
