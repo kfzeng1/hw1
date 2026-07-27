@@ -100,6 +100,37 @@ checkpoints_50/history.csv
 checkpoints_50/training_curves.png
 ```
 
+## 继续训练到 100 轮
+
+50 轮模型已经达到 `96.04%` 测试准确率，继续训练时不适合把学习率直接恢复到初始的 `0.1`。本次续训使用 `base lr=0.012`、`warmup_epochs=0`，并把总轮数设为 100。由于学习率仍按 100 轮 cosine schedule 计算，第 51 轮实际学习率约为 `0.006`，后续逐步衰减到 `1e-5`。
+
+续训命令：
+
+```bash
+/home/zkf/pytorch-env/bin/python -B -m cifar10_classifier.main \
+  --resume ./checkpoints_50/cifar10_wrn_last.pt \
+  --epochs 100 \
+  --lr 0.012 \
+  --min-lr 1e-5 \
+  --warmup-epochs 0 \
+  --batch-size 128 \
+  --test-batch-size 512 \
+  --workers 4 \
+  --output-dir ./checkpoints_100_finetune \
+  --history-file history.csv \
+  --tta \
+  --target-acc 90.0
+```
+
+续训输出：
+
+```text
+checkpoints_100_finetune/cifar10_wrn_best.pt
+checkpoints_100_finetune/cifar10_wrn_last.pt
+checkpoints_100_finetune/history.csv
+checkpoints_100_finetune/training_curves.png
+```
+
 ## 测试和评价指标
 
 测试使用 CIFAR-10 官方测试集，共 10,000 张图片。
@@ -108,17 +139,17 @@ checkpoints_50/training_curves.png
 
 ```bash
 /home/zkf/pytorch-env/bin/python -m cifar10_classifier.evaluate \
-  --checkpoint ./checkpoints_50/cifar10_wrn_best.pt \
+  --checkpoint ./checkpoints_100_finetune/cifar10_wrn_best.pt \
   --tta \
-  --output-dir ./results/cifar10_50_epochs
+  --output-dir ./results/cifar10_100_finetune
 ```
 
 测试输出：
 
 ```text
-results/cifar10_50_epochs/confusion_matrix.png
-results/cifar10_50_epochs/metrics.json
-results/cifar10_50_epochs/classification_report.csv
+results/cifar10_100_finetune/confusion_matrix.png
+results/cifar10_100_finetune/metrics.json
+results/cifar10_100_finetune/classification_report.csv
 ```
 
 `metrics.json` 保存整体 accuracy、macro precision、macro recall、macro F1、weighted F1。`classification_report.csv` 保存 10 个类别各自的 precision、recall、F1 和 support。
@@ -127,12 +158,12 @@ results/cifar10_50_epochs/classification_report.csv
 
 ```bash
 /home/zkf/pytorch-env/bin/python -m cifar10_classifier.result_summary \
-  --result-dir ./results/cifar10_50_epochs
+  --result-dir ./results/cifar10_100_finetune
 ```
 
-## 本次 50 轮结果
+## 本次结果
 
-本次重新训练的正式结果保存在：
+50 轮训练结果保存在：
 
 ```text
 results/cifar10_50_epochs/history.csv
@@ -149,4 +180,26 @@ results/cifar10_50_epochs/classification_report.csv
 最佳测试准确率：96.04%
 macro F1：96.03%
 weighted F1：96.03%
+```
+
+继续训练到 100 轮后的最新结果保存在：
+
+```text
+results/cifar10_100_finetune/history.csv
+results/cifar10_100_finetune/training_curves.png
+results/cifar10_100_finetune/confusion_matrix.png
+results/cifar10_100_finetune/metrics.json
+results/cifar10_100_finetune/classification_report.csv
+results/cifar10_100_finetune/cifar10_samples.png
+```
+
+100 轮结果：
+
+```text
+第 100 轮测试准确率：97.25%
+最佳测试准确率：97.30%
+最佳轮次：第 96 轮
+macro F1：97.30%
+weighted F1：97.30%
+测试集正确数：9730 / 10000
 ```

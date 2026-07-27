@@ -109,7 +109,7 @@ def main():
     parser.add_argument("--data-dir", default="./data", type=str)
     parser.add_argument(
         "--output",
-        default="./results/cifar10_50_epochs/cifar10_samples.png",
+        default="./results/cifar10_100_finetune/cifar10_samples.png",
         type=str,
     )
     parser.add_argument("--count", default=32, type=int)

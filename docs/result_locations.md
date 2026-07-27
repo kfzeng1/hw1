@@ -69,7 +69,7 @@ cd assignments/02_newton_min
 assignments/03_cifar10_classifier/
 ```
 
-本次 50 轮训练正式结果：
+50 轮训练结果：
 
 ```text
 assignments/03_cifar10_classifier/results/cifar10_50_epochs/history.csv
@@ -91,6 +91,30 @@ weighted F1：96.03%
 ```
 
 checkpoint 保存在本地 `assignments/03_cifar10_classifier/checkpoints_50/`，不上传到 GitHub。
+
+继续训练到 100 轮后的最新结果：
+
+```text
+assignments/03_cifar10_classifier/results/cifar10_100_finetune/history.csv
+assignments/03_cifar10_classifier/results/cifar10_100_finetune/training_curves.png
+assignments/03_cifar10_classifier/results/cifar10_100_finetune/confusion_matrix.png
+assignments/03_cifar10_classifier/results/cifar10_100_finetune/metrics.json
+assignments/03_cifar10_classifier/results/cifar10_100_finetune/classification_report.csv
+assignments/03_cifar10_classifier/results/cifar10_100_finetune/cifar10_samples.png
+```
+
+100 轮结果摘要：
+
+```text
+第 100 轮测试准确率：97.25%
+最佳测试准确率：97.30%
+最佳轮次：第 96 轮
+macro F1：97.30%
+weighted F1：97.30%
+测试集正确数：9730 / 10000
+```
+
+100 轮续训 checkpoint 保存在本地 `assignments/03_cifar10_classifier/checkpoints_100_finetune/`，不上传到 GitHub。
 
 ## 作业 4：豆包 API 生成 3D 视频
 

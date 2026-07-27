@@ -42,7 +42,7 @@ def print_summary(result_dir):
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Print CIFAR-10 training and test summary.")
-    parser.add_argument("--result-dir", default="./results/cifar10_50_epochs", type=Path)
+    parser.add_argument("--result-dir", default="./results/cifar10_100_finetune", type=Path)
     return parser.parse_args()
 
 

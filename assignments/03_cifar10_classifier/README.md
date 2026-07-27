@@ -20,15 +20,15 @@ cifar10_classifier/
   visualize.py      样本图、训练曲线、混淆矩阵
 ```
 
-## 本次 50 轮训练结果
+## 训练结果
 
-正式结果保存在：
+50 轮训练结果保存在：
 
 ```text
 results/cifar10_50_epochs/
 ```
 
-结果摘要：
+50 轮结果摘要：
 
 ```text
 第 50 轮测试准确率：96.04%
@@ -39,6 +39,25 @@ weighted F1：96.03%
 ```
 
 checkpoint 权重保存在 `checkpoints_50/`，体积较大，不上传到 GitHub。
+
+从 50 轮 checkpoint 继续训练到 100 轮后的最新结果保存在：
+
+```text
+results/cifar10_100_finetune/
+```
+
+100 轮结果摘要：
+
+```text
+第 100 轮测试准确率：97.25%
+最佳测试准确率：97.30%
+最佳轮次：第 96 轮
+macro F1：97.30%
+weighted F1：97.30%
+测试集正确数：9730 / 10000
+```
+
+续训 checkpoint 权重保存在 `checkpoints_100_finetune/`，体积较大，不上传到 GitHub。
 
 ## 下载数据
 
@@ -72,21 +91,42 @@ checkpoints_50/history.csv
 checkpoints_50/training_curves.png
 ```
 
+## 从 50 轮继续训练到 100 轮
+
+这里没有把学习率重新拉回 `0.1`。续训时模型已经达到 `96%` 左右，过大的学习率容易破坏已有权重；过小的学习率又很难继续提升。因此续训使用 `--lr 0.012 --warmup-epochs 0`，接入 100 轮 cosine 衰减后，第 51 轮实际学习率约为 `0.006`，随后逐步降到 `1e-5`。
+
+```bash
+cd assignments/03_cifar10_classifier
+/home/zkf/pytorch-env/bin/python -B -m cifar10_classifier.main \
+  --resume ./checkpoints_50/cifar10_wrn_last.pt \
+  --epochs 100 \
+  --lr 0.012 \
+  --min-lr 1e-5 \
+  --warmup-epochs 0 \
+  --batch-size 128 \
+  --test-batch-size 512 \
+  --workers 4 \
+  --output-dir ./checkpoints_100_finetune \
+  --history-file history.csv \
+  --tta \
+  --target-acc 90.0
+```
+
 ## 测试并输出指标
 
 ```bash
 /home/zkf/pytorch-env/bin/python -m cifar10_classifier.evaluate \
-  --checkpoint ./checkpoints_50/cifar10_wrn_best.pt \
+  --checkpoint ./checkpoints_100_finetune/cifar10_wrn_best.pt \
   --tta \
-  --output-dir ./results/cifar10_50_epochs
+  --output-dir ./results/cifar10_100_finetune
 ```
 
 测试输出：
 
 ```text
-results/cifar10_50_epochs/confusion_matrix.png
-results/cifar10_50_epochs/metrics.json
-results/cifar10_50_epochs/classification_report.csv
+results/cifar10_100_finetune/confusion_matrix.png
+results/cifar10_100_finetune/metrics.json
+results/cifar10_100_finetune/classification_report.csv
 ```
 
 `metrics.json` 包含 accuracy、macro precision、macro recall、macro F1、weighted F1 等指标。
@@ -95,7 +135,7 @@ results/cifar10_50_epochs/classification_report.csv
 
 ```bash
 /home/zkf/pytorch-env/bin/python -m cifar10_classifier.result_summary \
-  --result-dir ./results/cifar10_50_epochs
+  --result-dir ./results/cifar10_100_finetune
 ```
 
 ## 单张图片预测
@@ -103,7 +143,7 @@ results/cifar10_50_epochs/classification_report.csv
 ```bash
 /home/zkf/pytorch-env/bin/python -m cifar10_classifier.predict \
   path/to/image.png \
-  --checkpoint ./checkpoints_50/cifar10_wrn_best.pt
+  --checkpoint ./checkpoints_100_finetune/cifar10_wrn_best.pt
 ```
 
 ## 网页演示
@@ -112,7 +152,7 @@ results/cifar10_50_epochs/classification_report.csv
 
 ```bash
 /home/zkf/pytorch-env/bin/python -m cifar10_classifier.demo_server \
-  --checkpoint ./checkpoints_50/cifar10_wrn_best.pt \
+  --checkpoint ./checkpoints_100_finetune/cifar10_wrn_best.pt \
   --data-dir ./data \
   --port 8008
 ```

@@ -30,7 +30,7 @@ docs/
 | --- | --- | --- |
 | 1. 多项式逼近 `sin(x)` | `assignments/01_poly_sin/poly_sin_regression.py` | `assignments/01_poly_sin/results/` |
 | 2. 牛顿法最小化 `x1^2+2x2^2+x1x2` | `assignments/02_newton_min/newton_quadratic_min.py` | `assignments/02_newton_min/results/` |
-| 3. CIFAR-10 图像分类 | `assignments/03_cifar10_classifier/` | `assignments/03_cifar10_classifier/results/cifar10_50_epochs/` |
+| 3. CIFAR-10 图像分类 | `assignments/03_cifar10_classifier/` | `assignments/03_cifar10_classifier/results/cifar10_100_finetune/` |
 | 4. 豆包 API 生成 3D 视频 | `assignments/04_doubao_3d_video/` | `assignments/04_doubao_3d_video/results/turntable.mp4` |
 
 更详细的结果说明在：
@@ -52,4 +52,4 @@ assignments/04_doubao_3d_video/.env
 assignments/04_doubao_3d_video/output_model/
 ```
 
-CIFAR-10 checkpoint 保存在本地 `assignments/03_cifar10_classifier/checkpoints_50/`，体积较大，不上传；可用代码重新训练生成。
+CIFAR-10 checkpoint 保存在本地 `assignments/03_cifar10_classifier/checkpoints_50/` 和 `assignments/03_cifar10_classifier/checkpoints_100_finetune/`，体积较大，不上传；可用代码重新训练生成。

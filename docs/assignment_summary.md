@@ -8,7 +8,7 @@
 | --- | --- | --- | --- |
 | 作业 1 | 用 3、4、5 次多项式拟合 `sin(x)`，用梯度下降最小化 MSE | 手写全批量梯度下降，输出拟合图、损失曲线、训练 CSV 和多项式系数 | 5 次多项式最终 MSE 为 `0.0000204249` |
 | 作业 2 | 用牛顿法最小化 `f(x1,x2)=x1^2+2x2^2+x1x2` | 计算梯度、Hessian 和牛顿更新，保存完整迭代过程 | 极小点 `(0,0)`，极小值 `0` |
-| 作业 3 | 用 PyTorch CNN 训练 CIFAR-10，测试准确率达到 90% 以上，并输出多种分类指标 | WideResNet-28-10，50 轮训练，保存训练曲线、混淆矩阵、JSON/CSV 指标 | 测试准确率 `96.04%`，macro F1 `96.03%` |
+| 作业 3 | 用 PyTorch CNN 训练 CIFAR-10，测试准确率达到 90% 以上，并输出多种分类指标 | WideResNet-28-10，先训练 50 轮，再继续微调到 100 轮，保存训练曲线、混淆矩阵、JSON/CSV 指标 | 最佳测试准确率 `97.30%`，macro F1 `97.30%` |
 | 作业 4 | 对接豆包 API，实现物品 3D 展示交互效果 | 提供 3D 模型生成、图生视频、本地 turntable 渲染和网页查看代码 | 保存输入预览、3D 展示截图和 `turntable.mp4` |
 
 ## 目录对应关系
@@ -38,6 +38,7 @@ assignments/04_doubao_3d_video/作业4_豆包3D视频.docx
 assignments/01_poly_sin/results/
 assignments/02_newton_min/results/
 assignments/03_cifar10_classifier/results/cifar10_50_epochs/
+assignments/03_cifar10_classifier/results/cifar10_100_finetune/
 assignments/04_doubao_3d_video/results/
 ```
 
